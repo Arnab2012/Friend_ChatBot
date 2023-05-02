@@ -47,6 +47,9 @@ if artist_name:
     if song_uris:
         st.write("Here are some song suggestions:")
         for uri in song_uris:
-            st.write(uri)
+            response={
+                'fullfillmentText':"{}".format(uri)
+            }
+            #st.write(uri)
     else:
         st.write("No songs found for this artist.")
