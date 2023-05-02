@@ -17,18 +17,28 @@ auth_response = requests.post('https://accounts.spotify.com/api/token', {
     'client_secret': client_secret,
 })
 
-access_token = auth_response.json()['access_token']
+#access_token = auth_response.json()['access_token']
 
 # Define a function to search for songs of a given artist and return their URIs
 def search_artist(artist):
+    # Authenticate and get the access token
+    auth_response = requests.post('https://accounts.spotify.com/api/token', {
+        'grant_type': 'client_credentials',
+        'client_id': client_id,
+        'client_secret': client_secret,
+    })
+    access_token = auth_response.json()['access_token']
+
+    # Search for songs by the given artist and get the URIs of the top 5 results
     search_response = requests.get('https://api.spotify.com/v1/search', headers={
         'Authorization': f'Bearer {access_token}'
     }, params={
-        'q': artist,
-        'type': 'track'
+        'q': f'artist:{artist}',
+        'type': 'track',
+        'limit': 5
     })
+    song_uris = [track['uri'] for track in search_response.json()['tracks']['items']]
 
-    song_uris = [item['uri'] for item in search_response.json()['tracks']['items']]
     return song_uris
 
 # Define a function to generate a response for the chatbot
@@ -45,13 +55,10 @@ def generate_response(text):
     return response
 
 # Define the main function for the Streamlit app
-def main():
-    st.sidebar.title("Music Chatbot")
-    user_input = st.text_input("Enter your message:")
-    if user_input:
-        text = {"artist": user_input}
-        response = generate_response(text)
-        st.write(response)
 
-if __name__ == '__main__':
-    main()
+st.sidebar.title("Music Chatbot")
+user_input = st.text_input("Enter your message:")
+if user_input:
+    text = {"artist": user_input}
+    response = generate_response(text)
+    st.write(response)
