@@ -27,7 +27,11 @@ def search_artist(artist):
         'client_id': client_id,
         'client_secret': client_secret,
     })
-    access_token = auth_response.json()['access_token']
+
+    if auth_response.status_code == 200:
+        access_token = auth_response.json()['access_token']
+    else:
+        st.write("Authentication failed. Please check your credentials and try again.")
 
     # Search for songs by the given artist and get the URIs of the top 5 results
     search_response = requests.get('https://api.spotify.com/v1/search', headers={
