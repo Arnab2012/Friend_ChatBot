@@ -1,5 +1,5 @@
 streamlit
 flask
-request
+requests
 random
 scikit-learn==1.1.2
