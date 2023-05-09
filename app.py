@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
-
+import random
 app = Flask(__name__)
 
 client_id = "7302e978f89049e688d46fc635d928e8"
@@ -26,7 +26,7 @@ def search_songs(artist):
         'limit': 5
     })
     tracks = search_response.json()['tracks']['items']
-    # song_links = [f'<a href="{track["external_urls"]["spotify"]}">{track["name"]}</a>' for track in tracks]
+    random.shuffle(tracks)
     song_links = [f'{track["name"]}-->{track["external_urls"]["spotify"]}" \n' for track in tracks]
     return song_links
 
