@@ -3,10 +3,20 @@ import requests
 
 st.header('Friend')
 
-url = "your_dialogflow_webhook_url_here"
-headers = {"Content-Type": "application/json"}
+data = st.text_input('Enter your message here')
 
-response = requests.post(url, headers=headers, json=requests.get_json())
+url = 'https://arnab2012-friend-chatbot-app-vkyz89.streamlit.app/'
+headers = {'Content-Type': 'application/json'}
 
-data = response.json()
-print(str(data))
+data = {
+    'message': data,
+    'sender': 'streamlit'
+}
+
+response = requests.post(url, headers=headers, json=data)
+
+if response.ok:
+    response_data = response.json()
+    st.write(response_data['response'])
+else:
+    st.write('Error:', response.status_code)
