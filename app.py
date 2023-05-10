@@ -1,5 +1,5 @@
 import os
-import dialogflow
+import google-cloud-dialogflow
 import requests
 import random
 import streamlit as st
