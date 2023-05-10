@@ -1,5 +1,5 @@
 streamlit
 flask
 requests
-dialogflow
+google-cloud-dialogflow
 scikit-learn==1.1.2
