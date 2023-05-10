@@ -1,4 +1,5 @@
 streamlit
 flask
 requests
+dialogflow
 scikit-learn==1.1.2
