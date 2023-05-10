@@ -1,12 +1,18 @@
+import os
+import dialogflow
 from flask import Flask, request, jsonify
 import requests
 import random
+
 app = Flask(__name__)
+
+DIALOGFLOW_PROJECT_ID = os.environ['ayan-jblc']
+DIALOGFLOW_LANGUAGE_CODE = 'en'
+SESSION_ID = 'me'
 
 client_id = "7302e978f89049e688d46fc635d928e8"
 client_secret = "a6081fa4fdc4423b97bf2ceb699bbcbc"
 access_token = ""
-
 
 def search_songs(artist):
     # Authenticate and get the access token
@@ -30,18 +36,18 @@ def search_songs(artist):
     song_links = [f'{track["name"]}-->{track["external_urls"]["spotify"]}" \n' for track in tracks]
     return song_links
 
-
 @app.route('/', methods=['POST'])
-def index():
-    data = request.get_json()
-    artist = data['queryResult']['parameters']['music-artist']
-    song_links = search_songs(artist)
-    song_links_str = ', '.join(song_links)
-    response = {
-        'fulfillmentText': f"Here are the top 5 songs by {artist}\n\n: {song_links_str}",
-    }
-    return jsonify(response)
-
+def webhook():
+    req = request.get_json(force=True)
+    action = req.get('queryResult').get('action')
+    if action == 'search_songs':
+        artist = req['queryResult']['parameters']['music-artist']
+        song_links = search_songs(artist)
+        song_links_str = '\n'.join(song_links)
+        fulfillment = {'fulfillmentText': f"Here are the top 5 songs by {artist}:\n{song_links_str}"}
+    else:
+        fulfillment = {'fulfillmentText': "Sorry, I didn't understand that."}
+    return jsonify(fulfillment)
 
 if __name__ == '__main__':
     app.run(debug=True)
