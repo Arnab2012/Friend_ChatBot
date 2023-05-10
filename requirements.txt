@@ -1,4 +1,5 @@
 streamlit
 flask
+os
 requests
 scikit-learn==1.1.2
